@@ -1,0 +1,9 @@
+server:
+  port: 3000
+  env: "dev"
+
+database:
+  driver: sqlite
+  dsn: ./data/hotel-property.db
+  migration: true
+  seeding: true
