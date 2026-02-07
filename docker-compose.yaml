@@ -1,0 +1,10 @@
+version: 1.0.0
+
+services:
+  backend:
+    build: ./backend/
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/data:/data
+      - ./backend/config.yaml:/app/config.yaml

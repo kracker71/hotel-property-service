@@ -3,11 +3,12 @@ package handler
 import (
 	"context"
 	"log/slog"
+	"net/http"
 	"time"
 
 	"github.com/chayutK/hotel-property-service/internal/service"
-	hoteldto "github.com/chayutK/hotel-property-service/internal/transport/http/dto/hotel"
-	mapperdto "github.com/chayutK/hotel-property-service/internal/transport/http/dto/mapper"
+	"github.com/chayutK/hotel-property-service/internal/transport/http/dto/hoteldto"
+	"github.com/chayutK/hotel-property-service/internal/transport/http/dto/mapperdto"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
@@ -68,12 +69,12 @@ func (h *HotelHandler) GetHotelByID(c echo.Context) error {
 
 	if err := c.Bind(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	if err := h.validate.Struct(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	ctx, cancel := context.WithTimeout(c.Request().Context(), 5*time.Second)

@@ -22,7 +22,7 @@ func NewHotelRepository(db *gorm.DB) port.HotelPort {
 func (r *hotelRepository) FindAll(ctx context.Context) ([]domain.Hotel, error) {
 	var gormHotels []entity.Hotel
 
-	if err := r.db.WithContext(ctx).Preload("Facility").Find(&gormHotels).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Facility").Find(&gormHotels, "is_active = ?", true).Error; err != nil {
 		slog.Error("[ADAPTER]", "message", "error while inquiry hotels", "error", err.Error())
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (r *hotelRepository) FindAll(ctx context.Context) ([]domain.Hotel, error) {
 func (r *hotelRepository) FindByID(ctx context.Context, id string) (*domain.Hotel, error) {
 	var gormHotel entity.Hotel
 
-	if err := r.db.WithContext(ctx).Preload("Facility").First(&gormHotel, "hotel_id = ?", id).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Facility").First(&gormHotel, "hotel_id = ? AND is_active = ?", id, true).Error; err != nil {
 		slog.Error("[ADAPTER]", "message", "error while inquiry hotel by id", "hotel_id", id, "error", err.Error())
 		return nil, err
 	}

@@ -22,7 +22,7 @@ func NewRoomRepository(db *gorm.DB) port.RoomPort {
 func (r *RoomRepository) FindByHotelID(ctx context.Context, hotelID string) ([]domain.Room, error) {
 	var gormRooms []entity.Room
 
-	if err := r.db.WithContext(ctx).Preload("Benefit").Where("hotel_id = ?", hotelID).Find(&gormRooms).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Benefit").Where("hotel_id = ? AND is_active = ?", hotelID, true).Find(&gormRooms).Error; err != nil {
 		slog.Error("[ADAPTER]", "message", "error while inquiry rooms by hotel id", "hotel_id", hotelID, "error", err.Error())
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (r *RoomRepository) FindByHotelID(ctx context.Context, hotelID string) ([]d
 func (r *RoomRepository) FindByRoomID(ctx context.Context, roomID string) (*domain.Room, error) {
 	var gormRoom entity.Room
 
-	if err := r.db.WithContext(ctx).Preload("Benefit").First(&gormRoom, "room_id = ?", roomID).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Benefit").First(&gormRoom, "room_id = ? AND is_active = ?", roomID, true).Error; err != nil {
 		slog.Error("[ADAPTER]", "message", "error while inquiry room by room id", "room_id", roomID, "error", err.Error())
 		return nil, err
 	}

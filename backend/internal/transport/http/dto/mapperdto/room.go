@@ -2,7 +2,7 @@ package mapperdto
 
 import (
 	"github.com/chayutK/hotel-property-service/internal/domain"
-	roomdto "github.com/chayutK/hotel-property-service/internal/transport/http/dto/room"
+	"github.com/chayutK/hotel-property-service/internal/transport/http/dto/roomdto"
 )
 
 func ToRoomsDTO(rooms []domain.Room) []roomdto.RoomDTO {

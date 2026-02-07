@@ -3,11 +3,12 @@ package handler
 import (
 	"context"
 	"log/slog"
+	"net/http"
 	"time"
 
 	"github.com/chayutK/hotel-property-service/internal/service"
-	mapperdto "github.com/chayutK/hotel-property-service/internal/transport/http/dto/mapper"
-	roomdto "github.com/chayutK/hotel-property-service/internal/transport/http/dto/room"
+	"github.com/chayutK/hotel-property-service/internal/transport/http/dto/mapperdto"
+	"github.com/chayutK/hotel-property-service/internal/transport/http/dto/roomdto"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
@@ -48,12 +49,12 @@ func (h *RoomHandler) GetRooms(c echo.Context) error {
 
 	if err := c.Bind(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	if err := h.validate.Struct(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	rooms, err := h.roomService.GetRoomsByHotelID(ctx, req.HotelID)
@@ -85,12 +86,12 @@ func (h *RoomHandler) GetRoomByID(c echo.Context) error {
 
 	if err := c.Bind(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	if err := h.validate.Struct(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	room, err := h.roomService.GetRoomByRoomID(ctx, req.HotelID, req.RoomID)

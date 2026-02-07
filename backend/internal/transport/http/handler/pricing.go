@@ -3,10 +3,11 @@ package handler
 import (
 	"context"
 	"log/slog"
+	"net/http"
 	"time"
 
 	"github.com/chayutK/hotel-property-service/internal/service"
-	pricingdto "github.com/chayutK/hotel-property-service/internal/transport/http/dto/pricing"
+	"github.com/chayutK/hotel-property-service/internal/transport/http/dto/pricingdto"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
@@ -47,12 +48,12 @@ func (h *PricingHandler) CalculateRoomPrice(c echo.Context) error {
 
 	if err := c.Bind(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	if err := h.validate.Struct(&req); err != nil {
 		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Bad request"})
 	}
 
 	price, err := h.pricingService.CalculateRoomPrice(ctx, req.HotelID, req.RoomID, req.Nights)
