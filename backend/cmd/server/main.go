@@ -1,3 +1,14 @@
+// @title Hotel Property Service API
+// @version 1.0
+// @description API for Hotel Property Service
+// @termsOfService http://swagger.io/terms/
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@hotel.example.com
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+// @host localhost:8080
+// @BasePath /
 package main
 
 import (
@@ -5,6 +16,7 @@ import (
 	"log/slog"
 	"os"
 
+	docs "github.com/chayutK/hotel-property-service/docs"
 	"github.com/chayutK/hotel-property-service/internal/adapter"
 	"github.com/chayutK/hotel-property-service/internal/config"
 	"github.com/chayutK/hotel-property-service/internal/infra/database"
@@ -53,7 +65,9 @@ func main() {
 
 	http.RegisterRoutes(app, hotelHandler, roomHandler, pricingHandler)
 
-	// Swagger documentation route
+	// Set Swagger host to use configured server port and base path prefix
+	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%d", cfg.Server.Port)
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	app.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	app.Start(fmt.Sprintf(":%d", cfg.Server.Port))

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/chayutK/hotel-property-service/internal/service"
@@ -28,6 +29,13 @@ func (h *HotelHandler) RegisterRoutes(g *echo.Group) {
 	g.GET("/hotel/:hotel_id", h.GetHotelByID)
 }
 
+// GetAllHotels godoc
+// @Summary List hotels
+// @Description Get a list of hotels
+// @Tags hotels
+// @Produce json
+// @Success 200 {object} hoteldto.InquiryHotelsResponse
+// @Router /hotels [get]
 func (h *HotelHandler) GetAllHotels(c echo.Context) error {
 	var (
 		resp hoteldto.InquiryHotelsResponse
@@ -44,6 +52,14 @@ func (h *HotelHandler) GetAllHotels(c echo.Context) error {
 	return c.JSON(200, &resp)
 }
 
+// GetHotelByID godoc
+// @Summary Get hotel by id
+// @Description Get hotel details by hotel id
+// @Tags hotels
+// @Produce json
+// @Param hotel_id path string true "Hotel ID"
+// @Success 200 {object} hoteldto.InquiryHotelResponse
+// @Router /hotel/{hotel_id} [get]
 func (h *HotelHandler) GetHotelByID(c echo.Context) error {
 	var (
 		req  hoteldto.InquiryHotelRequest
@@ -51,10 +67,12 @@ func (h *HotelHandler) GetHotelByID(c echo.Context) error {
 	)
 
 	if err := c.Bind(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
 		return err
 	}
 
-	if err := c.Validate(&req); err != nil {
+	if err := h.validate.Struct(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
 		return err
 	}
 

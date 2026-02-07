@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/chayutK/hotel-property-service/internal/service"
@@ -26,6 +27,15 @@ func (h *PricingHandler) RegisterRoutes(g *echo.Group) {
 	g.POST("/price", h.CalculateRoomPrice)
 }
 
+// CalculateRoomPrice godoc
+// @Summary Calculate room price
+// @Description Calculate total price for requested hotel room and nights
+// @Tags pricing
+// @Accept json
+// @Produce json
+// @Param request body pricingdto.CalculatePricingRequest true "Pricing request"
+// @Success 200 {object} pricingdto.CalculatePricingResponse
+// @Router /price [post]
 func (h *PricingHandler) CalculateRoomPrice(c echo.Context) error {
 	var (
 		req  pricingdto.CalculatePricingRequest
@@ -36,10 +46,12 @@ func (h *PricingHandler) CalculateRoomPrice(c echo.Context) error {
 	defer cancel()
 
 	if err := c.Bind(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
 		return err
 	}
 
-	if err := c.Validate(&req); err != nil {
+	if err := h.validate.Struct(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
 		return err
 	}
 

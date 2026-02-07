@@ -1,0 +1,211 @@
+basePath: /
+definitions:
+  hoteldto.FacilityDTO:
+    properties:
+      description:
+        type: string
+      facility_id:
+        type: string
+      name:
+        type: string
+    type: object
+  hoteldto.HotelDTO:
+    properties:
+      address:
+        type: string
+      facility:
+        items:
+          $ref: '#/definitions/hoteldto.FacilityDTO'
+        type: array
+      hotel_id:
+        type: string
+      name:
+        type: string
+    type: object
+  hoteldto.InquiryHotelResponse:
+    properties:
+      hotel:
+        $ref: '#/definitions/hoteldto.HotelDTO'
+    type: object
+  hoteldto.InquiryHotelsResponse:
+    properties:
+      hotels:
+        items:
+          $ref: '#/definitions/hoteldto.HotelDTO'
+        type: array
+    type: object
+  pricingdto.CalculatePricingRequest:
+    properties:
+      hotelID:
+        type: string
+      nights:
+        minimum: 1
+        type: integer
+      roomID:
+        type: string
+    required:
+    - hotelID
+    - nights
+    - roomID
+    type: object
+  pricingdto.CalculatePricingResponse:
+    properties:
+      totalPrice:
+        type: number
+    type: object
+  roomdto.BenefitDTO:
+    properties:
+      benefitID:
+        type: string
+      description:
+        type: string
+      physicalRoomID:
+        type: string
+    type: object
+  roomdto.InquiryRoomResponse:
+    properties:
+      room:
+        $ref: '#/definitions/roomdto.RoomDTO'
+    type: object
+  roomdto.InquiryRoomsResponse:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/roomdto.RoomDTO'
+        type: array
+    type: object
+  roomdto.RoomDTO:
+    properties:
+      basePrice:
+        type: number
+      benefit:
+        items:
+          $ref: '#/definitions/roomdto.BenefitDTO'
+        type: array
+      cancellationPolicy:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      hotelID:
+        type: string
+      name:
+        type: string
+      roomID:
+        type: string
+      type:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@hotel.example.com
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API for Hotel Property Service
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Hotel Property Service API
+  version: "1.0"
+paths:
+  /hotel/{hotel_id}:
+    get:
+      description: Get hotel details by hotel id
+      parameters:
+      - description: Hotel ID
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/hoteldto.InquiryHotelResponse'
+      summary: Get hotel by id
+      tags:
+      - hotels
+  /hotels:
+    get:
+      description: Get a list of hotels
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/hoteldto.InquiryHotelsResponse'
+      summary: List hotels
+      tags:
+      - hotels
+  /hotels/{hotelID}/rooms:
+    get:
+      description: Get rooms for a given hotel
+      parameters:
+      - description: Hotel ID
+        in: path
+        name: hotelID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/roomdto.InquiryRoomsResponse'
+      summary: List rooms by hotel
+      tags:
+      - rooms
+  /hotels/{hotelID}/rooms/{roomID}:
+    get:
+      description: Get room details by hotel id and room id
+      parameters:
+      - description: Hotel ID
+        in: path
+        name: hotelID
+        required: true
+        type: string
+      - description: Room ID
+        in: path
+        name: roomID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/roomdto.InquiryRoomResponse'
+      summary: Get room by id
+      tags:
+      - rooms
+  /price:
+    post:
+      consumes:
+      - application/json
+      description: Calculate total price for requested hotel room and nights
+      parameters:
+      - description: Pricing request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pricingdto.CalculatePricingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pricingdto.CalculatePricingResponse'
+      summary: Calculate room price
+      tags:
+      - pricing
+swagger: "2.0"

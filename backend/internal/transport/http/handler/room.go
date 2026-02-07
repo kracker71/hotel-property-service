@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/chayutK/hotel-property-service/internal/service"
@@ -28,6 +29,14 @@ func (h *RoomHandler) RegisterRoutes(g *echo.Group) {
 	g.GET("/hotels/:hotelID/rooms/:roomID", h.GetRoomByID)
 }
 
+// GetRooms godoc
+// @Summary List rooms by hotel
+// @Description Get rooms for a given hotel
+// @Tags rooms
+// @Produce json
+// @Param hotelID path string true "Hotel ID"
+// @Success 200 {object} roomdto.InquiryRoomsResponse
+// @Router /hotels/{hotelID}/rooms [get]
 func (h *RoomHandler) GetRooms(c echo.Context) error {
 	var (
 		req  roomdto.InquiryRoomsRequest
@@ -38,10 +47,12 @@ func (h *RoomHandler) GetRooms(c echo.Context) error {
 	defer cancel()
 
 	if err := c.Bind(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
 		return err
 	}
 
-	if err := c.Validate(&req); err != nil {
+	if err := h.validate.Struct(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
 		return err
 	}
 
@@ -54,6 +65,15 @@ func (h *RoomHandler) GetRooms(c echo.Context) error {
 	return c.JSON(200, &resp)
 }
 
+// GetRoomByID godoc
+// @Summary Get room by id
+// @Description Get room details by hotel id and room id
+// @Tags rooms
+// @Produce json
+// @Param hotelID path string true "Hotel ID"
+// @Param roomID path string true "Room ID"
+// @Success 200 {object} roomdto.InquiryRoomResponse
+// @Router /hotels/{hotelID}/rooms/{roomID} [get]
 func (h *RoomHandler) GetRoomByID(c echo.Context) error {
 	var (
 		req  roomdto.InquiryRoomRequest
@@ -64,10 +84,12 @@ func (h *RoomHandler) GetRoomByID(c echo.Context) error {
 	defer cancel()
 
 	if err := c.Bind(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error binding request", "error", err.Error())
 		return err
 	}
 
-	if err := c.Validate(&req); err != nil {
+	if err := h.validate.Struct(&req); err != nil {
+		slog.Error("[HANDLER]", "message", "error validating request", "error", err.Error())
 		return err
 	}
 

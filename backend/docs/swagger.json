@@ -1,0 +1,321 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for Hotel Property Service",
+        "title": "Hotel Property Service API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@hotel.example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/hotel/{hotel_id}": {
+            "get": {
+                "description": "Get hotel details by hotel id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotels"
+                ],
+                "summary": "Get hotel by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Hotel ID",
+                        "name": "hotel_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/hoteldto.InquiryHotelResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels": {
+            "get": {
+                "description": "Get a list of hotels",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hotels"
+                ],
+                "summary": "List hotels",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/hoteldto.InquiryHotelsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/{hotelID}/rooms": {
+            "get": {
+                "description": "Get rooms for a given hotel",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "List rooms by hotel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Hotel ID",
+                        "name": "hotelID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/roomdto.InquiryRoomsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/hotels/{hotelID}/rooms/{roomID}": {
+            "get": {
+                "description": "Get room details by hotel id and room id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Get room by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Hotel ID",
+                        "name": "hotelID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Room ID",
+                        "name": "roomID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/roomdto.InquiryRoomResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/price": {
+            "post": {
+                "description": "Calculate total price for requested hotel room and nights",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pricing"
+                ],
+                "summary": "Calculate room price",
+                "parameters": [
+                    {
+                        "description": "Pricing request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pricingdto.CalculatePricingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pricingdto.CalculatePricingResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "hoteldto.FacilityDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "facility_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "hoteldto.HotelDTO": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "facility": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hoteldto.FacilityDTO"
+                    }
+                },
+                "hotel_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "hoteldto.InquiryHotelResponse": {
+            "type": "object",
+            "properties": {
+                "hotel": {
+                    "$ref": "#/definitions/hoteldto.HotelDTO"
+                }
+            }
+        },
+        "hoteldto.InquiryHotelsResponse": {
+            "type": "object",
+            "properties": {
+                "hotels": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hoteldto.HotelDTO"
+                    }
+                }
+            }
+        },
+        "pricingdto.CalculatePricingRequest": {
+            "type": "object",
+            "required": [
+                "hotelID",
+                "nights",
+                "roomID"
+            ],
+            "properties": {
+                "hotelID": {
+                    "type": "string"
+                },
+                "nights": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "roomID": {
+                    "type": "string"
+                }
+            }
+        },
+        "pricingdto.CalculatePricingResponse": {
+            "type": "object",
+            "properties": {
+                "totalPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "roomdto.BenefitDTO": {
+            "type": "object",
+            "properties": {
+                "benefitID": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "physicalRoomID": {
+                    "type": "string"
+                }
+            }
+        },
+        "roomdto.InquiryRoomResponse": {
+            "type": "object",
+            "properties": {
+                "room": {
+                    "$ref": "#/definitions/roomdto.RoomDTO"
+                }
+            }
+        },
+        "roomdto.InquiryRoomsResponse": {
+            "type": "object",
+            "properties": {
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/roomdto.RoomDTO"
+                    }
+                }
+            }
+        },
+        "roomdto.RoomDTO": {
+            "type": "object",
+            "properties": {
+                "basePrice": {
+                    "type": "number"
+                },
+                "benefit": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/roomdto.BenefitDTO"
+                    }
+                },
+                "cancellationPolicy": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "hotelID": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roomID": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
