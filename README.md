@@ -18,6 +18,9 @@ A RESTful API service for hotel and room management with pricing calculation cap
 - `github.com/go-playground/validator/v10` - Request validation
 - `github.com/spf13/viper` - Configuration management
 
+## Follow up via github
+[Github Hotel Property Service](https://github.com/kracker71/hotel-property-service)
+
 ## 🏗️ Architecture
 
 This project follows **Clean Architecture** (also known as **Hexagonal Architecture** or **Ports and Adapters**) principles with clear separation of concerns:
